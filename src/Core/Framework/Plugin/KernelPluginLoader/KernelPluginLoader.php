@@ -72,7 +72,7 @@ abstract class KernelPluginLoader extends Bundle
         return $this->pluginInstances;
     }
 
-    final public function getBundles(): iterable
+    final public function getBundles($kernelParameters = []): iterable
     {
         if (!$this->initialized) {
             return;
@@ -80,7 +80,14 @@ abstract class KernelPluginLoader extends Bundle
 
         foreach ($this->pluginInstances->getActives() as $plugin) {
             yield $plugin;
-            yield from $plugin->getExtraBundles($this->classLoader);
+
+            $copy = new KernelPluginCollection($this->getPluginInstances()->all());
+            $additionalBundles = $plugin->getAdditionalBundles($this->classLoader, $copy, $kernelParameters);
+            if (empty($additionalBundles)) {
+                yield from $plugin->getExtraBundles($this->classLoader);
+            } else {
+                yield from $additionalBundles;
+            }
         }
 
         yield $this;

@@ -8,6 +8,7 @@ use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Plugin\Context\UpdateContext;
+use Shopware\Core\Framework\Plugin\KernelPluginCollection;
 use Symfony\Component\Routing\RouteCollectionBuilder;
 
 abstract class Plugin extends Bundle
@@ -77,9 +78,19 @@ abstract class Plugin extends Bundle
     }
 
     /**
+     * @deprecated 6.2.0 use self::getAdditionalBundles instead
+     *
      * @return Bundle[]
      */
     public function getExtraBundles(ClassLoader $classLoader): array
+    {
+        return [];
+    }
+
+    /**
+     * @return Bundle[]
+     */
+    public function getAdditionalBundles(ClassLoader $classLoader, KernelPluginCollection $pluginInstances, array $kernelParameters): array
     {
         return [];
     }
